@@ -1,7 +1,7 @@
 
 <ion-header>
   <ion-toolbar>
-    <ion-title>Gestión de órdenes</ion-title>
+    <ion-title>Gestión de estudiantes</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -81,7 +81,7 @@
     {{ soloCriticos ? 'Mostrar todas' : 'Solo estudiantes reprobados' }}
   </ion-button>
 
-  <h3>Estudiantes disponibles</h3>
+  <h3>Estudiantes matriculados</h3>
 
   <p *ngIf="cargando">Cargando estudiantes...</p>
   <p *ngIf="errorCarga">{{ errorCarga }}</p>
