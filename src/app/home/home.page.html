@@ -1,0 +1,166 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Gestión de órdenes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <h2>Dashboard Curso</h2>
+
+  <ion-grid>
+    <ion-row>
+
+      <ion-col size="12" size-md="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>
+              promedio 
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <h1>{{ promedio }}</h1>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12" size-md="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>
+              Estudiantes Reprobados
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <h1>{{ totalCriticos }}</h1>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+  <ion-searchbar
+    placeholder="Buscar estudiante por nombre o correo"
+    [(ngModel)]="busqueda"
+    (ionInput)="filtrar()">
+  </ion-searchbar>
+
+  <ion-item>
+    <ion-input
+      label="Nota mínima"
+     labelPlacement="stacked"
+     type="number"
+     step="1"
+     min ="0"
+     max="5"
+     placeholder="Ejemplo: 15000"
+     [(ngModel)]="notaMinima"
+     (ionInput)="filtrar()">
+    </ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-input
+      label="Nota máxima"
+      labelPlacement="stacked"
+      type="number"
+      min="0"
+      max="5"
+      step="1"
+      placeholder="Ejemplo: 5"
+      [(ngModel)]="notaMaxima"
+      (ionInput)="filtrar()">
+    </ion-input>
+  </ion-item>
+
+  <ion-button
+    expand="block"
+    (click)="soloCriticos = !soloCriticos; filtrar()">
+    {{ soloCriticos ? 'Mostrar todas' : 'Solo estudiantes reprobados' }}
+  </ion-button>
+
+  <h3>Estudiantes disponibles</h3>
+
+  <p *ngIf="cargando">Cargando estudiantes...</p>
+  <p *ngIf="errorCarga">{{ errorCarga }}</p>
+
+  <ion-list>
+    <ion-item *ngFor="let estudiante of filtradas">
+
+      <ion-label>
+        <h2>Estudiante #{{ estudiante.id }}</h2>
+        <p>{{ estudiante.nombre }}</p>
+
+        <h2>Correo:</h2>
+        <p>{{ estudiante.email }}</p>
+        
+        <p>
+          Nota:
+          {{ estudiante.nota | number:'1.0-0' }}
+        </p>
+
+
+        <ion-badge
+          [color]="estudiante.nota < 3 ? 'danger' : 'success'">
+          {{ estudiante.nota < 3 ? 'Reprobado' : 'Aprobado' }}
+        </ion-badge>
+      </ion-label>
+
+      <ion-button
+        slot="end"
+        (click)="abrirModal(estudiante  )">
+        Ver
+      </ion-button>
+
+    </ion-item>
+  </ion-list>
+
+  <ion-modal
+    [isOpen]="modalAbierto"
+    (didDismiss)="cerrarModal()">
+
+    <ng-template>
+
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>información del estudiante</ion-title>
+
+          <ion-buttons slot="end">
+            <ion-button (click)="cerrarModal()">
+              Cerrar
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+
+        <ng-container *ngIf="estudianteSeleccionado as estudiante">
+
+          <h2>Estudiante #{{ estudiante.id }}</h2>
+          <p>{{ estudiante.nombre }}</p>
+          <p>
+            Correo:
+            {{ estudiante.email }}
+          <p>
+            nota:
+            {{ estudiante.nota | number:'1.0-0' }}
+          </p>
+
+         
+
+          <ion-button
+            expand="block"
+            (click)="confirmarOrden()">
+            Aceptar
+          </ion-button>
+
+        </ng-container>
+
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+</ion-content>
